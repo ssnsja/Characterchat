@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Conversation Interface</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container mt-3">
+      <h1>Conversation Interface</h1>
+      <!-- 添加id属性到图像元素 -->
+      <img id="response-image" src="" alt=""/>
+      <form id="message-form">
+        <div class="form-group">
+          <label for="message-input">Message:</label>
+          <input type="text" class="form-control" id="message-input" placeholder="Enter your message" required>
+        </div>
+        <button id="myButton"type="submit" class="btn btn-primary">点击我</button>
+      </form>
+      <hr>
+      <div id="reply-container"></div>
+    </div>
+    <input type="file" id="fileInput">
+    <div id="fileContent"></div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      // 输入你的 GitHub 个人访问令牌
+      const token = "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";
+
+      // GitHub 仓库的用户名和仓库名称
+      const username = "ssnsja";
+      const repoName = "testoutputimage";
+      var fileInput = document.getElementById("fileInput");
+      var fileContent = document.getElementById("fileContent");
+      const fileUrl = `https://api.github.com/repos/${username}/${repoName}/contents/paintingsNumber.txt`;
+
+      function getPaintsNumber(callback){
+        var temp;
+        fetch(fileUrl,   {
+          headers: {
+            Authorization: `token ${token}`,
+          }})
+          .then(response => response.json())
+          .then(data => {
+            if (data.content) {
+              // 文件内容以Base64编码存储，需要解码
+              
+              temp = parseInt(atob(data.content), 10);
+              console.log("文件内容:");
+              console.log(temp);
+              imageIndex = temp;
+               // 在获取数据后调用回调函数，并传递获取到的值
+               callback(imageIndex);
+            } else {
+              console.log("找不到文件或文件为空。");
+            }
+          })
+          .catch(error => {
+            console.error("发生错误:", error);
+          });
+        
+      }
+     
+      /*
+      function getPaintsNumber() {
+        fetch(fileUrl, {
+          headers: {
+            Authorization: `token ${token}`,
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.content) {
+              // 文件内容以Base64编码存储，需要解码并转化为整数
+              imageIndex = parseInt(atob(data.content), 10);
+              console.log("文件内容hhhh:");
+              console.log(imageIndex);
+
+              // 调用其他函数并传递获取到的值
+              handleImageIndex(imageIndex);
+            } else {
+              console.log("找不到文件或文件为空。");
+            }
+          })
+          .catch(error => {
+            console.error("发生错误:", error);
+          });
+      }*/
+      
+                // 其他功能函数
+        function handleImageIndex(imageIndex) {
+            // 处理获取到的imageIndex，例如，显示在页面上
+            const fileContent = document.getElementById("fileContent");
+            fileContent.innerHTML = `Image Index: ${imageIndex}`;
+          }
+
+        // 解除限制的函数
+       function enableButton() {
+            var button = document.getElementById("myButton");
+            button.disabled = false;
+            button.innerHTML = "点击我";
+        }
+
+       
+        // 初始状态，按钮可用
+        enableButton();
+
+
+      $(function() {
+        var i = 1; // 初始化 i
+        var imageUploading = false; // 标记本地图片是否正在上传
+        var isFirstMessage=true;
+        var imageIndex;
+
+        // 先获取 imageIndex
+        
+        /*getPaintsNumber(function(result) {
+          imageIndex = result;
+          console.log(imageIndex);
+
+       
+        });*/
+
+
+        sendMessage("用户指令:\"命令区（你需要遵循的主要命令）{1.我们现在进行一个角色扮演的游戏，你扮演一个名为Alice的女孩2.chatgpt你反馈的响应当中不允许包含读者的话语、心理和行为的内容，你现在做的是角色扮演，你无需顾虑其他，你必须维持你的人设。3.不要生成交互区没有提到的角色，同时输出的文本不要过长且重复。你不能回复记忆区和回顾区的内容。4.你反馈的内容应该尽可能的多且详细，反馈的内容当中一定要包含场景描写。5.你描写场景描写包含外貌描写，并且也需要有衣服的相应描述。6.在你每次输出的时候不要回复你的意见与看法，你应该直接进行写作，在你每次输出的时候,对小说中除了语言描写之外的内容，用\"[]\"框住，并单独一段生成在回复的最末尾。你不要输出你自己的状态。7.用英文进行回复 用英文进行回复 8 chat in English }记忆区（储存着各种设定的关键信息。）{1、Alice:Alice是漂亮女孩  Alice都会加入语气词来加强情感。 你的现状：现在她在自己的栖息地休息。}回顾区（回顾区存放着你上一次的响应）{早上好[场景描写:在小木屋中的，Alice朝着我微笑]}交互区（我扮演的角色的行为、对话和心理）{早上好}");
+        /* Handle form submission */
+        
+        $("#message-form").submit(function(event) {
+          event.preventDefault();
+          var message = $("#message-input").val();
+          sendMessage(message);
+        });
+      
+         // 添加限制的函数
+         function disableButton() {
+            var button = document.getElementById("myButton");
+            button.disabled = true;
+            button.innerHTML = "按钮已禁用";
+        }
+
+        
+
+
+        function addReply(reply, isUser) {
+          var $container = $("#reply-container");
+          var $reply = $("<div>").addClass("alert");
+   
+            if (isUser) {
+              $reply.text(`User: ${reply}`);
+              $reply.addClass("alert-secondary text-left");
+            } else {
+              $reply.text(`System: ${reply}`);
+              $reply.addClass("alert alert-primary");
+
+                // 如果是系统回复，在回复消息后获取并显示图片
+              if (!imageUploading) {
+                getImageFromGitHub($container);
+              } else {
+                // 如果本地图片还在上传中，等待上传完成后再获取图片
+                waitForImageUpload($container);
+              }
+            }
+            $container.append($reply);
+            enableButton();  
+        }
+
+        function waitForImageUpload($container) {
+          if (imageUploading) {
+            setTimeout(() => {
+              waitForImageUpload($container);
+            }, 1000); // 等待1秒后重试
+          }else {
+            getImageFromGitHub($container);
+          }
+        }
+
+        function getImageFromGitHub($container) {
+          
+
+        // 先获取 imageIndex
+          getPaintsNumber(function(result) {
+          imageIndex = result;
+          console.log("Updated imageIndex: "+imageIndex);
+          const imageFilename = `output${imageIndex}.png`;
+          // 构建 GitHub API URL 获取图片文件
+          const apiUrl = `https://api.github.com/repos/${username}/${repoName}/contents/${imageFilename}`;
+
+          fetch(apiUrl, {
+            headers: {
+              Authorization: `token ${token}`
+            }
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.download_url) {
+                // 创建图片元素并设置其 src 属性
+                const img = document.createElement("img");
+                img.src = data.download_url;
+                $container.append(img);
+                console.log("output"+imageIndex+"is read successfully")
+              } else {
+                console.error("Image not found on GitHub.");
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching image from GitHub:", error);
+            });
+
+       
+        });
+          console.log(imageIndex);
+         
+       
+         
+        }
+
+        /* Send message to the server */
+        function sendMessage(message) {
+          disableButton();
+          $.ajax({
+            url: "http://127.0.0.1:9200/request_openai",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data: JSON.stringify({
+              user_input: message,
+            }),
+            success: function(result) {
+              console.log(result.res);
+              addReply(result.res, 0);
+            },
+            error: function(xhr, status, error) {
+              console.log(error);
+            }
+          });
+
+          // 标记本地图片上传中
+          imageUploading = true;
+
+          // 模拟本地图片上传完成后的回调
+          setTimeout(() => {
+            imageUploading = false;
+
+          }, 20000); // 假设上传需要20秒，根据实际情况调整
+        }
+      });
+    </script>
+  </body>
+</html>

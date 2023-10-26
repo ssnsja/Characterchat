@@ -1,0 +1,78 @@
+V0.1
+完成了chatgpt的api的调用
+v0.2
+完成了ai绘画的api的调用
+v0.3
+management调用ai绘画
+改进人物模板
+tips
+地址错了
+文件的读写有问题
+解决""""问题
+v0.4
+tips
+上传本地图片到GitHub仓库
+解决文件没有输入问题
+vscode 打开的路径问题
+
+解决连续性问题
+
+发生异常: JSONDecodeError
+Expecting value: line 1 column 1 (char 0)
+StopIteration: 0
+解决办法：重启电脑
+
+response = requests.post(url=f'{url}/sdapi/v1/txt2img', json=payload, headers=headers)
+无法运行
+解决办法：关掉vpn
+$env:http_proxy = $null
+$env:https_proxy = $null
+
+每次刷新相当于html重加载
+
+v0.5
+加载GitHub仓库图片到本地
+
+problems
+生成的图片不具有连续性。
+Submit按钮具有一点小问题
+对话的次数不能过多
+ai的回复的不确定性,如何正确的把ai的回复转化成ai绘画的提示词
+
+
+v0.6
+解决Submit
+使用lora解决生成不同人问题
+problems:
+对话的次数不能过多
+ai的回复的不确定性,如何正确的把ai的回复转化成ai绘画的提示词
+
+
+v0.7
+ 有了初始化
+无法写入
+全局变量的问题
+
+problem
+{
+    "message": "API rate limit exceeded for 50.7.252.58. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)",
+    "documentation_url": "https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting"
+}
+解决办法
+用原来的api
+problem 
+imageIndex underfined
+解决办法
+异步问题
+console.log(getPaintsNumber()); 输出 undefined 的原因是因为 getPaintsNumber() 函数中包含了异步操作，而 console.log 语句在异步操作完成之前被执行。在 JavaScript 中，如果一个函数包含异步操作，它不会立即返回结果，而是继续执行后续的代码。这就是为什么你在 getPaintsNumber() 函数中使用了 fetch 来获取数据，而 fetch 是一个异步操作，需要一些时间来完成。
+
+你可以尝试在 getPaintsNumber() 函数中添加一个回调函数，该回调函数在异步操作完成后调用并将结果传递给它，然后在回调函数中执行 console.log。这样可以确保在获取到数据后才进行输出，而不会出现 undefined 的情况。
+
+// 先获取 imageIndex
+          getPaintsNumber(function(result) {
+          imageIndex = result;
+         }))
+
+
+NowProblems
+GitHub图片缓存问题
