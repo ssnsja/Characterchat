@@ -1,7 +1,7 @@
 config_dict = dict(
 
     Acess_config = dict(
-        authorization = "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",
+        authorization = "",
     ),
 
     Model_config = dict(
