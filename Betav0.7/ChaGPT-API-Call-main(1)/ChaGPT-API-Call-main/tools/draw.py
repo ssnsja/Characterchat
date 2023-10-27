@@ -7,7 +7,7 @@ from github import Github
 import os
 
 # 输入您的 GitHub 个人访问令牌
-token = "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"
+token = "“
 # 创建 GitHub 客户端
 g = Github(token)
 # 指定仓库的用户名和仓库名
